@@ -1,54 +1,96 @@
 #include <stdio.h>
 #include <math.h>
 
-float disc(float a, float b, float c);
-int find_res(float a, float b, float c);
-int roots2(float a, float b, float c, float discr);
+float calculate_discriminant(float a, float b, float c);
+int find_final_result(float a, float b, float c, float *result1, float *result2);
+int start_intro(void);
+int answer_out(int n, float a, float b, float c, float result1, float result2);
 
 int main(void) {
     float a = 0, b = 0, c = 0;
+    float result1 = -1e9, result2 = -1e9;
 
+    start_intro();
     scanf("%f %f %f", &a, &b, &c);
 
-    find_res(a, b, c);
+    int n = find_final_result(a, b, c, &result1, &result2);
+    answer_out(n, a, b, c, result1, result2);
+
     return 0;
 }
 
-float disc(float a, float b, float c) {
+int start_intro(void){
+    printf("                         y\n");                             
+    printf("                         ^\n");
+    printf("                         |\n");
+    printf("                      .-'|'-.\n");
+    printf("                    .'   |   '.\n");
+    printf("                   /     |     \\\n");
+    printf("                  /      |      \\\n");
+    printf("                 /       |       \\\n");
+    printf("                /        |        \\\n");
+    printf("               /         |         \\\n");
+    printf("              /          |          \\\n");
+    printf("             /           |           \\ \n");
+    printf("-------------------------+-------------------------> x\n");
+    printf("======================================================\n");
+    printf("||            ◣ Quadratic Equation Solver ◢         ||\n");
+    printf("======================================================\n");
+    printf("                   ax^2 + bx + c = 0                  \n");
+    printf("------------------------------------------------------\n");
+    printf("Please enter coefficients a, b, c separated by spaces:\n");
+    printf("a (float), b (float), c (float)\n");
+    printf("Example: 1 -3 2\n");
+    printf("------------------------------------------------------\n");
+    return 0;
+}
+
+float calculate_discriminant(float a, float b, float c) {
     return b * b - 4 * a * c;
 }
 
-int find_res(float a, float b, float c) {
-    float discr = disc(a, b, c);
+int find_final_result(float a, float b, float c, float *result1, float *result2) {
+    float discriminant = calculate_discriminant(a, b, c);
 
     if (a == 0) {
-        printf("in the quadratic equation leading coefficient doesn't have to be 0\n");
         if (b != 0){
-                printf("and in linear equation root is %.3f\n", -c/b);
+                *result1 = -c / b;
+                return 1;
         } else{
-            if (c == 0) { printf("and this equation has infinitely many roots\n");}
-            else { printf("and this equation has 0 roots\n");}
+            if (c == 0) { return 2e9;}
+            else { return 0;}
         }
     } else {
-        if (discr < 0) {
-            printf("this equation has 0 roots\n");
+        if (discriminant < 0) {
+            return 0;
         } else{
-            if (discr == 0) { 
-                printf("this equation's root is %.3f\n", -b/(2 * a));
+            if (discriminant == 0) { 
+                *result1 = -b / (2 * a);
+                return 1;
             }
             else {
-                roots2(a, b, c, discr);
+                *result1 = (-b + sqrt(discriminant)) / (2 * a);
+                *result2 = (-b - sqrt(discriminant)) / (2 * a);
+                return 2;
             }
         }
     }
-    return 0;
 }
 
-int roots2(float a, float b, float c, float discr) {
-    float res0_sq = sqrt(discr);
-    float res1 = (-b + res0_sq) / (2 * a);
-    float res2 = (-b - res0_sq) / (2 * a);
+int answer_out(int n, float a, float b, float c, float result1, float result2){
 
-    printf("this equation's roots are %.3f and %.3f\n", (res1 > res2 ? res2 : res1), (res1 > res2 ? res1 : res2));
+    if (a==0) {printf("This equation is not quadratic\n");}
+
+    if (n==2e9){
+        printf("And this equation has infinitely many roots\n");
+    } else { 
+        if (n==0){
+            printf("This equation has 0 roots\n");
+        } else if (n==1){
+            printf("This equation has 1 root : %.3f\n", result1);
+        } else{
+            printf("This equation has 2 roots : %.3f and %.3f\n", ((result1 > result2) ? result2 : result1), ((result1 > result2) ? result1 : result2));
+        }
+    }
     return 0;
 }
