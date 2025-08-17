@@ -22,10 +22,12 @@ int find_res(float a, float b, float c){
     float discr = disc(a, b, c);
 
     if (a == 0){
-        if (b!=0){
-            printf("leading coefficient has to be not 0, but in linear equation root is %.3f\n", -c/b);
+        printf("leading coefficient doesn't has to be 0\n");
+        if (b != 0){
+            printf(" but in linear equation root is %.3f\n", -c/b);
         } else{
-            printf("coefficients are wrong\n");
+            if (c == 0) { printf("but it has infinitely many roots\n");}
+            else { printf("but it has 0 roots\n");}
         }
     } else{
         if (discr < 0){
