@@ -1,37 +1,52 @@
 #include <stdio.h>
 #include <math.h>
 
-float disc(float a0, float a1, float a2) {
-    return a1 * a1 - 4 * a0 * a2;
-}
+float disc(float a, float b, float c);
+int roots2(float a, float b, float c, float discr);
+int find_res(float a, float b, float c);
 
-int roots(float a0, float a1, float a2, float discr, float *res1, float *res2) {
-    float res0_sq = sqrt(discr);
-    *res1 = (-a1 + res0_sq) / (2 * a0);
-    *res2 = (-a1 - res0_sq) / (2 * a0);
+int main(void) {
+    float a = 0, b = 0, c = 0;
+
+    scanf("%f %f %f", &a, &b, &c);
+
+    find_res(a, b, c);
     return 0;
 }
 
-float mini(float res1, float res2) {
-    return (res1 < res2) ? res1 : res2;
+float disc(float a, float b, float c) {
+    return b * b - 4 * a * c;
 }
 
-int main(void) {
-    float a0, a1, a2;
-    float res1, res2;
+int find_res(float a, float b, float c){
+    float discr = disc(a, b, c);
 
-    scanf("%f %f %f", &a0, &a1, &a2);
-    float discr = disc(a0, a1, a2);
-
-    if (discr < 0) {
-        printf("has 0 roots\n");
-    } else {
-        if (a0 == 0) {
-            printf("root is %.3f\n", -a2 / a1);
-        } else {
-            roots(a0, a1, a2, discr, &res1, &res2);
-            printf("roots are %.3f and %.3f\n", mini(res1, res2), (res1 > res2 ? res1 : res2));
+    if (a == 0){
+        if (b!=0){
+            printf("leading coefficient has to be not 0, but in linear equation root is %.3f\n", -c/b);
+        } else{
+            printf("coefficients are wrong\n");
+        }
+    } else{
+        if (discr < 0){
+            printf("has 0 roots\n");
+        } else{
+            if (discr == 0){ 
+                printf("root is %.3f\n", -b/(2*a));
+            }
+            else{
+                roots2(a, b, c, discr);
+            }
         }
     }
+    return 0;
+}
+
+int roots2(float a, float b, float c, float discr) {
+    float res0_sq = sqrt(discr);
+    float res1 = (-b + res0_sq) / (2 * a);
+    float res2 = (-b - res0_sq) / (2 * a);
+
+    printf("roots are %.3f and %.3f\n", (res1 > res2 ? res2 : res1), (res1 > res2 ? res1 : res2));
     return 0;
 }
