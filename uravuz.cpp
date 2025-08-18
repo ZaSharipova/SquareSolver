@@ -1,15 +1,23 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include <math.h>
 #include <limits.h>
 
-#define INF_ROOTS INT_MAX
-const float EPS = 1e-6;
+enum {
+    ZERO_ROOTS = 0,
+    ONE_ROOT   = 1,
+    TWO_ROOTS  = 2,
+    INF_ROOTS  = INT_MAX
+};
+const float EPS = 1e-6f;
 
 void start_intro(void);
 void input_coefficients(float *a, float *b, float *c);
-void answer_out(int n, float a, float result1, float result2);
+void clear_input_buffer(void);
+void answer_out(int number_of_roots, float result1, float result2);
 
 int find_result(float a, float b, float c, float *result1, float *result2);
+bool is_zero(float number);
 float calculate_discriminant(float a, float b, float c);
 int find_linear_root(float b, float c, float *result1);
 int find_quadratic_roots(float a, float b, float c, float *result1, float *result2);
@@ -22,8 +30,8 @@ int main(void) {
     start_intro();
     input_coefficients(&a, &b, &c);
 
-    int n = find_result(a, b, c, &result1, &result2);
-    answer_out(n, a, result1, result2);
+    int number_of_roots = find_result(a, b, c, &result1, &result2);
+    answer_out(number_of_roots, result1, result2);
 
     return 0;
 }
@@ -54,36 +62,44 @@ void start_intro(void){
 }
 
 void input_coefficients(float *a, float *b, float *c) {
-    int status;
+    int status = 0;
     do {
         status = scanf("%f %f %f", a, b, c);
         if (status != 3) {
             printf("Input error! You must enter three real numbers separated by spaces.\n");
             printf("Try again:\n");
-            while (getchar() != '\n') { }
+            clear_input_buffer();
         }
     } while (status != 3);
 }
 
+void clear_input_buffer(void){
+    int c = 0;
+    while ((c = getchar()) != '\n' && c != EOF){ }
+}
+
 int find_result(float a, float b, float c, float *result1, float *result2) {
-    if (fabsf(a) < EPS) {
+    if (is_zero(a)) {
         return find_linear_root(b, c, result1);
     } else {
         return find_quadratic_roots(a, b, c, result1, result2);
     }
 }
 
+bool is_zero(float number){
+    return fabsf(number) < EPS;
+}
 float calculate_discriminant(float a, float b, float c) {
     return b * b - 4 * a * c;
 }
 
 int find_linear_root(float b, float c, float *result1){
-    if (fabsf(b) > EPS){
+    if (!is_zero(b)){
             *result1 = -c / b;
-            return 1;
+            return ONE_ROOT;
     } else{
-        if (fabsf(c) < EPS) { return INF_ROOTS;}
-        else { return 0;}
+        if (is_zero(c)) { return INF_ROOTS;}
+        else { return ZERO_ROOTS;}
     }
 }
 
@@ -91,15 +107,15 @@ int find_quadratic_roots(float a, float b, float c, float *result1, float *resul
     float discriminant = calculate_discriminant(a, b, c);
 
     if (discriminant < -EPS) {
-            return 0;
+            return ZERO_ROOTS;
     } else{
-        if (fabsf(discriminant) < EPS) { 
+        if (is_zero(discriminant)) { 
             *result1 = -b / (2 * a);
-            return 1;
+            return ONE_ROOT;
         } else {
-            *result1 = (-b + sqrt(discriminant)) / (2 * a);
-            *result2 = (-b - sqrt(discriminant)) / (2 * a);
-            return 2;
+            *result1 = (-b + sqrtf(discriminant)) / (2 * a);
+            *result2 = (-b - sqrtf(discriminant)) / (2 * a);
+            return TWO_ROOTS;
         }
     }   
 }
@@ -112,20 +128,23 @@ void sort_result(float *result1, float *result2){
     } 
 }
 
-void answer_out(int n, float a, float result1, float result2){
-   
-    if (fabsf(a) < EPS) {printf("This equation is not quadratic\n");}
-
-    if (n == INF_ROOTS){
-        printf("And this equation has infinitely many roots\n");
-    } else { 
-        if (n == 0){
-            printf("This equation has 0 roots\n");
-        } else if (n == 1){
-            printf("This equation has 1 root : %.3f\n", result1);
-        } else{
-            sort_result(&result1, &result2);
-            printf("This equation has 2 roots : %.3f and %.3f\n", result1, result2);
-        }
+void answer_out(int number_of_roots, float result1, float result2){
+    switch (number_of_roots){
+    case ZERO_ROOTS: 
+        printf("This equation has 0 roots.\n");
+        break;
+    case ONE_ROOT: 
+        printf("This equation has 1 root : %.3f.\n", result1);
+        break;
+    case TWO_ROOTS:
+        sort_result(&result1, &result2);
+        printf("This equation has 2 roots : %.3f and %.3f.\n", result1, result2);
+        break;
+    case INF_ROOTS: 
+        printf("This equation has infinitely many roots.\n");
+        break;
+    default:
+        printf("Unexpected number of roots: %d\n", number_of_roots); // на всякий случай
+        break;
     }
 }
