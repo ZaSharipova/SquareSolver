@@ -1,24 +1,20 @@
 #include <stdio.h>
 #include <cmath>
 #include <limits.h>
-#include "InstructorSquareSolver.h"
+#include "RootsFinderSquareSolver.h"
 
 const float EPS = 1e-6f;
 
-extern float a, b, c;
-extern float result1, result2;
-extern int number_of_roots;
-
-
 int find_result(float a, float b, float c, float *result1, float *result2);
 bool is_zero(float number);
+bool is_negative(float number);
 float calculate_discriminant(float a, float b, float c);
-RootsCount find_linear_root(float b, float c, float *result1);
-RootsCount find_quadratic_roots(float a, float b, float c, float *result1, float *result2);
+int find_linear_root(float b, float c, float *result1);
+int find_quadratic_roots(float a, float b, float c, float *result1, float *result2);
 void sort_result(float *result1, float *result2);
 
 int find_result(float a, float b, float c, float *result1, float *result2) {
-    if (is_zero(a)){
+    if (is_zero(a)) {
         return find_linear_root(b, c, result1);
     } else {
         return find_quadratic_roots(a, b, c, result1, result2);
@@ -28,10 +24,16 @@ int find_result(float a, float b, float c, float *result1, float *result2) {
 bool is_zero(float number) {
     return fabsf(number) < EPS;
 }
+
+bool is_negative(float number) {
+    return number < -EPS;
+}
+
 float calculate_discriminant(float a, float b, float c) {
     return b * b - 4 * a * c;
 }
-RootsCount find_linear_root(float b, float c, float *result1) {
+
+int find_linear_root(float b, float c, float *result1) {
     if (!is_zero(b)) {
             *result1 = -c / b;
             return kOneRoot;
@@ -41,10 +43,10 @@ RootsCount find_linear_root(float b, float c, float *result1) {
     }
 }
 
-RootsCount find_quadratic_roots(float a, float b, float c, float *result1, float *result2) {
+int find_quadratic_roots(float a, float b, float c, float *result1, float *result2) {
     float discriminant = calculate_discriminant(a, b, c);
 
-    if (discriminant < -EPS) {
+    if (is_negative(discriminant)) {
             return kZeroRoots;
     } else {
         if (is_zero(discriminant)) { 
@@ -66,5 +68,3 @@ void sort_result(float *result1, float *result2) {
         *result2 = t;
     } 
 }
-
-

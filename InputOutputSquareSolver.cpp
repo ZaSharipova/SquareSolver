@@ -1,145 +1,144 @@
 #include <stdio.h>
+#include <string.h>
 #include <limits.h>
-#include "InstructorSquareSolver.h"
 
-extern float a, b, c;
-extern float result1, result2;
-extern int number_of_roots;
+#include "InputOutputSquareSolver.h"
+#include "AllTextSquareSolver.h"
+#include "RootsFinderSquareSolver.h"
 
-void start_intro(void);
-
-int input_choice(void);
-int output_choice(void);
-int input_transfer(int input_choice_result); 
-int input_with_file(void);
-void input_with_console(void);
+int handle_input(int input_choice_result, float *a, float *b, float *c);
+int handle_output(int output_choice_result, int number_of_roots, float result1, float result2);
+int choice_question(void);
+int input(int input_choice_result, FILE *input_file, float *a, float *b, float *c);
 void clear_input_buffer(void);
-int output(int output_choice_result);
+void output(int output_choice_result, int number_of_roots, float result1, float result2, FILE *file);
+int open_file(const char *filename, FILE **file);
+int error_printer(int error_type);
+int close_file(FILE *file);
 
-void start_intro(void) {
-    printf("                                  y\n");                             
-    printf("                                  ^\n");
-    printf("                                  |\n");
-    printf("                              .-' | '-.\n");
-    printf("                            .'    |    '.\n");
-    printf("                           /      |      \\\n");
-    printf("                          /       |       \\\n");
-    printf("                         /        |        \\\n");
-    printf("                        /         |         \\\n");
-    printf("                       /          |          \\\n");
-    printf("                      /           |           \\\n");
-    printf("                     /            |            \\\n");
-    printf("----------------------------------+---------------------------------> x\n");
-    printf("=======================================================================\n");
-    printf("||                   ◣ Quadratic Equation Solver ◢                   ||\n");
-    printf("=======================================================================\n");
-    printf("                           ax^2 + bx + c = 0\n");
-    printf("-----------------------------------------------------------------------\n");
+int handle_input(int input_choice_result, float *a, float *b, float *c) {
+    FILE *file = NULL;
+    int err = kNoError;
+ 
+    if (input_choice_result == kFile) {
+        err = open_file("InputCoefficients.txt", &file);
+        if (error_printer(err)) return err;
+ 
+        err = input(input_choice_result, file, a, b, c);
+        if (error_printer(err)) return err;
+ 
+        err = close_file(file);
+        if (error_printer(err)) return err;
+    } else {
+        example_of_input_coefficients();
+        file = stdin;
+        err = input(input_choice_result, file, a, b, c);
+        if (error_printer(err)) return err;
+    }
+ 
+    return kNoError;
 }
 
-int input_choice(void) {
-    printf("Please answer whether you want to enter a, b, c by file or by console:\n");
-    printf("1 - by file \"InputCoefficients.txt\",\n");
-    printf("2 - by console:\n");
+int handle_output(int output_choice_result, int number_of_roots, float result1, float result2) {
+    FILE *file = NULL;
+    int err = kNoError;
+ 
+    if (output_choice_result == kFile) {
+        err = open_file("OutputRoots.txt", &file);
+        if (error_printer(err)) return err;
+ 
+        output(output_choice_result, number_of_roots, result1, result2, file);
+ 
+        err = close_file(file);
+        if (error_printer(err)) return err;
+    } else {
+        output(output_choice_result, number_of_roots, result1, result2, stdout);
+    }
+ 
+    return kNoError;
+}
 
-    int input_choice_result = 0;
+int open_file(const char *filename, FILE **file) {
+    if (strcmp(filename, "InputCoefficients.txt") == 0) {
+        *file = fopen(filename, "r");
+    } else {
+        *file = fopen(filename, "w");
+    }
+
+    if (*file == NULL) {
+        return kErrorOpening;
+    }
+
+    return kNoError;
+}
+
+int close_file(FILE *file) {
+    int status = fclose(file);
+    if (status != 0) {
+        return kErrorClosing;
+    }
+    return kNoError;
+}
+
+int choice_question(void) {
+    TypeOfInputOutput choice_result = kConsole;
     int status = 0;
 
     do{
-        status = scanf("%d", &input_choice_result);
-        if (status != 1 || (input_choice_result != 1 && input_choice_result != 2)){
-            printf("Input error! You should write just \"1\" or \"2\".\n");
-            printf("Try again:\n");
+        status = scanf("%d", &choice_result);
+        if (status != 1 || (choice_result != kFile && choice_result != kConsole)) {
+            problem_with_input_one_text();
             clear_input_buffer();
         }
-    } while (status != 1 || (input_choice_result != 1 && input_choice_result != 2));
-    return input_choice_result;
-    
+    } while (status != 1 || (choice_result != kFile && choice_result != kConsole));
+
+    return choice_result;
 }
 
-int output_choice(void) {
-    printf("\n");
-    printf("Please answer whether you want to see roots in a file or in a console:\n");
-    printf("1 - in the file \"OutputRoots.txt\",\n");
-    printf("2 - in the console:\n");
+int input(int input_choice_result, FILE *input_file, float *a, float *b, float *c) {
 
-    int output_choice_result = 0;
-    int status = 0;
-
-    do{
-        status = scanf("%d", &output_choice_result);
-        if (status != 1 || (output_choice_result != 1 && output_choice_result != 2)){
-            printf("Input error! You should write just \"1\" or \"2\".\n");
-            printf("Try again:\n");
-            clear_input_buffer();
+    int status = fscanf(input_file, "%f %f %f", a, b, c);
+    if (status != 3){
+        if (input_choice_result == kFile) {
+            return kBadInput;
         }
-    } while (status != 1 || (output_choice_result != 1 && output_choice_result != 2));
-    
-    return output_choice_result;
-}
-
-int input_transfer(int input_choice_result){
-    if (input_choice_result == 1){
-        return input_with_file();
-    } else{
-        input_with_console();
-        return 0;
-    }
-}
-int input_with_file(void) {
-    FILE *input = NULL;
-
-    input = fopen("InputCoefficients.txt", "r");
-    if (input == NULL) {
-        return -2;
-    }
-
-    int status = fscanf(input, "%f %f %f", &a, &b, &c);
-    if (status != 3) {
-        fclose(input);
-        return -1;
-    }
-
-    fclose(input);
-    return 0;
-}
-
-void input_with_console(void) {
-
-    int status = 0;
-
-    printf("\n");
-    printf("Please enter coefficients a, b, c separated by spaces:\n");
-    printf("a (float), b (float), c (float)\n");
-    printf("Example: 1 -3 2\n");
-
-    do {
-        status = scanf("%f %f %f", &a, &b, &c);
-        if (status != 3){
-            printf("Input error! You should enter three real numbers separated by spaces.\n");
-            printf("Try again:\n");
-            clear_input_buffer();
+        else{
+            while (status != 3) {
+                problem_with_input_three_text();
+                clear_input_buffer();
+                status = fscanf(input_file, "%f %f %f", a, b, c);
+            }
         }
-    } while (status != 3);
+    }
+
+    return kNoError;
 }
+
 
 void clear_input_buffer(void) {
     int c = 0;
     while ((c = getchar()) != '\n' && c != EOF) {;}
 }
 
-int output(int output_choice_result) {
-    FILE *file = NULL;
-    if (output_choice_result == 1){
-        file = fopen("OutputRoots.txt", "w");
-
-        if (file == NULL) {
-            return -1;
-        }
-    } else {
-        file = stdout;
-        fprintf(file, "\n");
+int error_printer(int error_type){
+    switch (error_type){
+    case kNoError:
+        return 0;
+    case kErrorOpening:
+        fprintf(stderr, "Error while opening file.\n");
+        break;
+    case kErrorClosing:
+        fprintf(stderr, "Error while closing file.\n");
+        break;
+    case kBadInput:
+        fprintf(stderr, "Input error! You should have entered three real numbers separated by spaces.\n");
+        fprintf(stderr, "Rewrite numbers in the file or enter them in the console in the next Run.\n");
+        break;
     }
+    return 1;
+}
+void output(int output_choice_result, int number_of_roots, float result1, float result2, FILE *file) {
+    if (output_choice_result == kConsole) {printf("\n");}
 
     switch (number_of_roots) {
     case kZeroRoots: 
@@ -155,9 +154,9 @@ int output(int output_choice_result) {
         fprintf(file, "This equation has infinitely many roots.\n");
         break;
     }
-    if (output_choice_result == 1){
+
+    if (output_choice_result == kFile){
+        fprintf(stdout, "\n");
         fprintf(stdout, "Roots are already in a file \"OutputRoots.txt\"\n");
-        fclose(file);
     }
-    return 0;
 }
