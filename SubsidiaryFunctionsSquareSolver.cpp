@@ -10,7 +10,7 @@ const float EPS = 1e-6f;
 bool is_zero(float number);
 bool is_negative(float number);
 void sort_result(float *result1, float *result2);
-void root_zero_checker(float *result1);
+void root_zero_checker(float *result);
 
 bool status_scan_false(int status, int choice_result);
 void clear_input_buffer(void);
@@ -35,11 +35,11 @@ void sort_result(float *result1, float *result2) {
     } 
 }
 
-void root_zero_checker(float *result1){
-    assert(result1 != NULL);
+void root_zero_checker(float *result){
+    assert(result != NULL);
 
-    if (is_zero(*result1) && is_negative(*result1)){
-        *result1*=(-1);
+    if (is_zero(*result) && is_negative(*result)){
+        *result *= (-1);
     }
 }
 
