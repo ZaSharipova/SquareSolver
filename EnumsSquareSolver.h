@@ -3,12 +3,13 @@
 
 #ifndef SOME_OF_ENUMS
 #define SOME_OF_ENUMS
+
     enum RootsCount{
         kZeroRoots = 0,
         kOneRoot   = 1,
         kTwoRoots  = 2,
         kInfRoots  = INT_MAX,
-            };
+    };
 
     enum PossibleErrors{
         kNoError          = 0,
