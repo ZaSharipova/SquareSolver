@@ -7,6 +7,7 @@ void output_choice_text(void);
 void example_of_input_coefficients(void);
 void problem_with_input_one_text(void);
 void problem_with_input_three_text(void);
+void problem_with_input_three_text_file(void);
 
 void start_intro(void) {
     printf("                                  y\n");                             
@@ -55,4 +56,9 @@ void problem_with_input_one_text(void){
 void problem_with_input_three_text(void){
     printf("Input error! You should enter three real numbers separated by spaces.\n");
     printf("Try again:\n");
+}
+
+void problem_with_input_three_text_file(void) {
+    fprintf(stderr, "Input error! You should have entered three real numbers separated by spaces.\n");
+    fprintf(stderr, "Rewrite numbers in the file or enter them in the console in the next Run.\n");
 }

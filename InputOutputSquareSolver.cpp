@@ -1,56 +1,213 @@
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
+#include <assert.h>
 
 #include "InputOutputSquareSolver.h"
 #include "AllTextSquareSolver.h"
-#include "RootsFinderSquareSolver.h"
+#include "EnumsSquareSolver.h"
+#include "SubsidiaryFunctionsSquareSolver.h"
 
-int handle_input(int input_choice_result, float *a, float *b, float *c);
-int handle_output(int output_choice_result, int number_of_roots, float result1, float result2);
+bool parse_in(int argc, char * argv[], int *input_choice_result, int i, const char **filename_to_open_input);
+bool parse_out(int argc, char * argv[], int *output_choice_result, int i, const char **filename_to_open_output);
+int parse_arguments(int argc, char *argv[], int *input_choice_result, int *output_choice_result, const char **filename_to_open_input, const char **filename_to_open_output);
+
+void first_question_in_graphics(int *input_choice_result);
+void second_question_in_graphics(int *output_choice_result);
+
+int handle_input(int input_choice_result, float *a, float *b, float *c, const char *filename);
+int handle_input_commandline(float *a, float *b, float *c, FILE *file);
+int handle_output(int output_choice_result, int number_of_roots, float result1, float result2, const char *filename);
 int choice_question(void);
 int input(int input_choice_result, FILE *input_file, float *a, float *b, float *c);
-void clear_input_buffer(void);
+int all_file_input(int input_choice_result, float *a, float *b, float *c, const char *filename);
+void all_console_input(int input_choice_result, float *a, float *b, float *c, const char *filename);
 void output(int output_choice_result, int number_of_roots, float result1, float result2, FILE *file);
-int open_file(const char *filename, FILE **file);
+
+int open_file(const char *filename, FILE **file, const char *mode);
 int error_printer(int error_type);
 int close_file(FILE *file);
 
-int handle_input(int input_choice_result, float *a, float *b, float *c) {
-    FILE *file = NULL;
+
+int parse_arguments(int argc, char *argv[], int *input_choice_result, int *output_choice_result, const char **filename_to_open_input, const char **filename_to_open_output) { 
+    assert(input_choice_result != NULL);
+    assert(output_choice_result != NULL);
+    assert(filename_to_open_input != NULL);
+    assert(filename_to_open_output != NULL);
+
+    if (argc > 1) {
+        int i = 1;
+        bool flag_input = false;
+        bool flag_output = false;
+
+        while (i < argc){
+            if (parse_in(argc, argv, input_choice_result, i, filename_to_open_input)){
+                flag_input = true;
+    
+            } else if (parse_out(argc, argv, output_choice_result, i, filename_to_open_output)){
+                flag_output = true;
+
+            } else{
+                return kBadInputCommands;
+            }
+            i+=2;
+        }
+        if (!flag_input || !flag_output){
+            return kBadInputCommands;
+        }
+    } else {
+        first_question_in_graphics(input_choice_result);
+        second_question_in_graphics(output_choice_result);
+    }
+    return kNoError;
+
+}
+
+bool parse_in(int argc, char *argv[], int *input_choice_result, int i, const char **filename_to_open_input){
+    assert(argv != NULL);
+    assert(filename_to_open_input != NULL);
+
+    if (in_out_command_checker(argc, i, argv[i], in_command)){
+        i++;
+        if (strcmp(argv[i], "console") == 0){
+            *input_choice_result = kConsole;
+
+        } else if (strcmp(argv[i], "file") == 0){
+            *input_choice_result = kFile;
+
+        } else{
+            *input_choice_result = kFile;
+            *filename_to_open_input = argv[i];
+        }
+        return true;
+    }
+    return false;
+}
+
+bool parse_out(int argc, char * argv[], int *output_choice_result, int i, const char **filename_to_open_output){
+    assert(argv != NULL);
+    assert(filename_to_open_output != NULL);
+
+    if (in_out_command_checker(argc, i, argv[i], out_command)){
+        i++;
+        if (strcmp(argv[i], "console") == 0){
+            *output_choice_result = kConsole;
+
+        } else if (strcmp(argv[i], "file") == 0){
+            *output_choice_result = kFile;
+            
+        } else{
+            *output_choice_result = kFile;
+            *filename_to_open_output = argv[i];
+        }
+        return true;
+    }
+    return false;
+}
+
+void first_question_in_graphics(int *input_choice_result) {
+    assert(input_choice_result != NULL);
+
+    start_intro();
+    input_choice_text();
+    *input_choice_result = choice_question();
+}
+
+void second_question_in_graphics(int *output_choice_result){
+    assert(output_choice_result != NULL);
+
+    output_choice_text();
+    *output_choice_result = choice_question();
+}
+
+int handle_input(int input_choice_result, float *a, float *b, float *c, const char *filename) {
+    assert(a != NULL);
+    assert(b != NULL);
+    assert(c != NULL);
+    assert(filename != NULL);
+
     int err = kNoError;
  
     if (input_choice_result == kFile) {
-        err = open_file("InputCoefficients.txt", &file);
-        if (error_printer(err)) return err;
- 
-        err = input(input_choice_result, file, a, b, c);
-        if (error_printer(err)) return err;
- 
-        err = close_file(file);
-        if (error_printer(err)) return err;
+        err = all_file_input(input_choice_result, a, b, c, filename);
+        if (err != kNoError){
+            return err;
+        }
+
+        // if (error_printer(err) == kBadInputGraphics) {
+        //     err = close_file(file);
+        //     if (err == kErrorClosing){
+        //         problem_with_input_three_text_file();
+        //         return kErrorClosing;
+        //     }
+        //     return kBadInputGraphics;
+        // }
+
     } else {
-        example_of_input_coefficients();
-        file = stdin;
-        err = input(input_choice_result, file, a, b, c);
-        if (error_printer(err)) return err;
+        all_console_input(input_choice_result, a, b, c, filename);
     }
  
     return kNoError;
 }
 
-int handle_output(int output_choice_result, int number_of_roots, float result1, float result2) {
+int all_file_input(int input_choice_result, float *a, float *b, float *c, const char *filename){
+    assert(a != NULL);
+    assert(b != NULL);
+    assert(c != NULL);
+    assert(filename != NULL);
+
+    FILE *file = NULL;
+    int err = kNoError;
+
+    err = open_file(filename, &file, read_mode);
+
+    if (err != kNoError){
+        return err;
+    }
+ 
+    err = input(input_choice_result, file, a, b, c);
+
+    if (err != kNoError){
+        return kBadInputGraphics;
+    }
+
+    err = close_file(file);
+    if (err != kNoError) {
+        return kErrorClosing;
+    }
+    return kNoError;
+}
+
+void all_console_input(int input_choice_result, float *a, float *b, float *c, const char *filename) {
+    assert(a != NULL);
+    assert(b != NULL);
+    assert(c != NULL);
+    assert(filename != NULL);
+
+    FILE *file = NULL;
+
+    example_of_input_coefficients();
+    file = stdin;
+    input(input_choice_result, file, a, b, c);
+}
+
+int handle_output(int output_choice_result, int number_of_roots, float result1, float result2, const char *filename_to_open_output) {
+    assert(filename_to_open_output != NULL);
+
     FILE *file = NULL;
     int err = kNoError;
  
     if (output_choice_result == kFile) {
-        err = open_file("OutputRoots.txt", &file);
-        if (error_printer(err)) return err;
+
+        err = open_file(filename_to_open_output, &file, write_mode);
  
         output(output_choice_result, number_of_roots, result1, result2, file);
  
         err = close_file(file);
-        if (error_printer(err)) return err;
+        if (err != kNoError) {
+            return kErrorClosing;
+        }
+
     } else {
         output(output_choice_result, number_of_roots, result1, result2, stdout);
     }
@@ -58,14 +215,15 @@ int handle_output(int output_choice_result, int number_of_roots, float result1, 
     return kNoError;
 }
 
-int open_file(const char *filename, FILE **file) {
-    if (strcmp(filename, "InputCoefficients.txt") == 0) {
-        *file = fopen(filename, "r");
-    } else {
-        *file = fopen(filename, "w");
-    }
+int open_file(const char *filename, FILE **file, const char *mode) {
+    assert(mode != NULL);
+    assert(filename != NULL);
+    assert(mode != NULL);
+    assert(file != NULL);
 
-    if (*file == NULL) {
+    *file = fopen(filename, mode);
+
+    if (*file == NULL){
         return kErrorOpening;
     }
 
@@ -73,6 +231,8 @@ int open_file(const char *filename, FILE **file) {
 }
 
 int close_file(FILE *file) {
+    assert(file != NULL);
+
     int status = fclose(file);
     if (status != 0) {
         return kErrorClosing;
@@ -81,26 +241,31 @@ int close_file(FILE *file) {
 }
 
 int choice_question(void) {
-    TypeOfInputOutput choice_result = kConsole;
+    int choice_result = kConsole;
     int status = 0;
 
     do{
         status = scanf("%d", &choice_result);
-        if (status != 1 || (choice_result != kFile && choice_result != kConsole)) {
+        if (status_scan_false(status, choice_result)) {
             problem_with_input_one_text();
             clear_input_buffer();
         }
-    } while (status != 1 || (choice_result != kFile && choice_result != kConsole));
+
+    } while (status_scan_false(status, choice_result));
 
     return choice_result;
 }
 
 int input(int input_choice_result, FILE *input_file, float *a, float *b, float *c) {
+    assert(input_file != NULL);
+    assert(a != NULL);
+    assert(b != NULL);
+    assert(c != NULL);
 
     int status = fscanf(input_file, "%f %f %f", a, b, c);
     if (status != 3){
         if (input_choice_result == kFile) {
-            return kBadInput;
+            return kBadInputGraphics;
         }
         else{
             while (status != 3) {
@@ -114,49 +279,58 @@ int input(int input_choice_result, FILE *input_file, float *a, float *b, float *
     return kNoError;
 }
 
-
-void clear_input_buffer(void) {
-    int c = 0;
-    while ((c = getchar()) != '\n' && c != EOF) {;}
-}
-
 int error_printer(int error_type){
     switch (error_type){
     case kNoError:
-        return 0;
+        return kNoError;
+
     case kErrorOpening:
         fprintf(stderr, "Error while opening file.\n");
-        break;
+        return kErrorOpening;
+
     case kErrorClosing:
         fprintf(stderr, "Error while closing file.\n");
-        break;
-    case kBadInput:
-        fprintf(stderr, "Input error! You should have entered three real numbers separated by spaces.\n");
-        fprintf(stderr, "Rewrite numbers in the file or enter them in the console in the next Run.\n");
-        break;
+        return kErrorClosing;
+
+    case kBadInputCommands:
+        fprintf(stderr, "Input error.\n");
+        return kBadInputCommands;
+
+    case kBadInputGraphics:
+        problem_with_input_three_text_file();
+        return kBadInputGraphics;
+        
+    default:
+        assert(0 && "Invalid error\n");
     }
-    return 1;
+
+    return kNoError;
 }
+
 void output(int output_choice_result, int number_of_roots, float result1, float result2, FILE *file) {
-    if (output_choice_result == kConsole) {printf("\n");}
+    assert(file != NULL);
+
+    printf("\n");
 
     switch (number_of_roots) {
     case kZeroRoots: 
         fprintf(file, "This equation has 0 roots.\n");
         break;
+
     case kOneRoot: 
         fprintf(file, "This equation has 1 root : %.3f.\n", result1);
         break;
+
     case kTwoRoots:
         fprintf(file, "This equation has 2 roots : %.3f and %.3f.\n", result1, result2);
         break;
+
     case kInfRoots: 
         fprintf(file, "This equation has infinitely many roots.\n");
         break;
     }
 
     if (output_choice_result == kFile){
-        fprintf(stdout, "\n");
-        fprintf(stdout, "Roots are already in a file \"OutputRoots.txt\"\n");
+        fprintf(stdout, "Roots are already in a file.\n");
     }
 }
