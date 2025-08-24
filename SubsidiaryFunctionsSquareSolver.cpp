@@ -5,37 +5,39 @@
 
 #include "EnumsSquareSolver.h"
 
-const float EPS = 1e-6f;
+const long double EPS = 1e-12L;
 
-bool is_zero(float number);
-bool is_negative(float number);
-void sort_result(float *result1, float *result2);
-void root_zero_checker(float *result);
+bool is_zero(long double number);
+bool is_negative(long double number);
+void sort_result(long double *result1, long double *result2);
+void root_zero_checker(long double *result);
 
 bool status_scan_false(int status, int choice_result);
 void clear_input_buffer(void);
 bool in_out_command_checker(int argc, int i, char * stroke, const char *command);
 
-bool is_zero(float number) {
-    return fabsf(number) < EPS;
+long nums_counter(char * buff, long size);
+
+bool is_zero(long double number) {
+    return fabsl(number) < EPS;
 }
 
-bool is_negative(float number) {
+bool is_negative(long double number) {
     return number < -EPS;
 }
 
-void sort_result(float *result1, float *result2) {
+void sort_result(long double *result1, long double *result2) {
     assert(result1 != NULL);
     assert(result2 != NULL);
 
     if (*result1 > *result2) {
-        float t = *result1;
+        long double t = *result1;
         *result1 = *result2;
         *result2 = t;
     } 
 }
 
-void root_zero_checker(float *result){
+void root_zero_checker(long double *result){
     assert(result != NULL);
 
     if (is_zero(*result) && is_negative(*result)){
@@ -56,4 +58,15 @@ void clear_input_buffer(void) {
 
 bool in_out_command_checker(int argc, int i, char * stroke, const char *command){
     return (strcmp(stroke, command) == 0) && (i + 1 < argc);
+}
+
+long nums_counter(char * buff, long size){
+    long cnt = 0;
+    for (long i = 0; i < size; i++){
+        if (buff[i] == '\n'){
+            cnt++;
+        }
+    }
+    cnt++;
+    return cnt * 3;
 }

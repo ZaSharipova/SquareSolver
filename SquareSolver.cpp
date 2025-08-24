@@ -5,11 +5,13 @@
 #include "AllTextSquareSolver.h"
 #include "InputOutputSquareSolver.h"
 #include "RootsFinderSquareSolver.h"
+#include "EnumsSquareSolver.h"
 
 int main(int argc, char *argv[]) {
-    float a = 0, b = 0, c = 0;
-    float result1 = 0, result2 = 0;
-    int number_of_roots = kZeroRoots;
+
+    long double a = 0, b = 0, c = 0;
+    long double result1 = 0, result2 = 0;
+    long double number_of_roots = kZeroRoots;
 
     const char *filename_to_open_input = "InputCoefficients.txt";
     const char *filename_to_open_output = "OutputRoots.txt";
@@ -18,9 +20,12 @@ int main(int argc, char *argv[]) {
     int output_choice_result = kConsole;
 
     int parse_error = parse_arguments(argc, argv, &input_choice_result, &output_choice_result, &filename_to_open_input, &filename_to_open_output);
-    if (parse_error != kNoError){
+    if (parse_error == kBadInputCommands){
         error_printer(parse_error);
         return kBadInputCommands;
+    }
+    if (parse_error == kErrorTest){
+        return kNoError;
     }
  
     int handle_input_result = handle_input(input_choice_result, &a, &b, &c, filename_to_open_input);
