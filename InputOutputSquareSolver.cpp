@@ -327,10 +327,13 @@ void output(int output_choice_result, int number_of_roots, long double result1, 
         break;
 
     case kOneRoot: 
+        MY_ASSERT(result1 > 0, "результат должен быть неотрицательным");
         fprintf(file, "This equation has " GREEN "1" RESET " root : " CYAN "%.5Lf.\n" RESET, result1);
         break;
 
     case kTwoRoots:
+        MY_ASSERT(result1 > 0, "результат должен быть неотрицательным");
+        MY_ASSERT(result2 > 0, "результат должен быть неотрицательным");
         fprintf(file, "This equation has " GREEN "2" RESET " roots : " CYAN "%.5Lf and %.5Lf.\n" RESET, result1, result2);
         break;
 
