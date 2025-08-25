@@ -4,7 +4,7 @@
 //!
 //! @return true/false
 //------------------------------------------------------------------
-bool is_zero(float number);
+bool is_zero(long double number);
 
 //-------------------------------------------
 //! Tests whether the number is negative.
@@ -13,7 +13,7 @@ bool is_zero(float number);
 //!
 //! @return true/false
 //-------------------------------------------
-bool is_negative(float number);
+bool is_negative(long double number);
 
 //----------------------------------------------
 //! Sorts result1 and result2.
@@ -22,14 +22,14 @@ bool is_negative(float number);
 //! @param [out] result2 Pointer to the 2nd root
 //!
 //----------------------------------------------
-void sort_result(float *result1, float *result2);
+void sort_result(long double *result1, long double *result2);
 
 //-------------------------------------------------------------------------
 //! Checks if the root looks like "-0.000..." and changes it to "0.000...".
 //!
 //! @param [out] result1 Pointer to the result (root)
 //-------------------------------------------------------------------------
-void root_zero_checker(float *result);
+void root_zero_checker(long double *result);
 
 //--------------------------------------------------------------------
 //! Checks whether the number entered from the file is correct (1, 2).
@@ -58,3 +58,4 @@ void clear_input_buffer(void);
 //------------------------------------------------------------------------------------------------------
 bool in_out_command_checker(int argc, int i, char * stroke, const char *command);
 
+size_t nums_counter(char * buff, size_t size);

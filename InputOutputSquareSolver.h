@@ -67,7 +67,7 @@ void second_question_in_graphics(int *output_choice_result);
 //!
 //! @return type of error from "PossibleErrors" ("kNoError" if there is no error)
 //-----------------------------------------------------------------------------------------------------------------------
-int handle_input(int input_choice_result, float *a, float *b, float *c, const char *filename);
+int handle_input(int input_choice_result, long double *a, long double *b, long double *c, const char *filename);
 
 //--------------------------------------------------------------------------------------------
 //! Handles all the process of output.
@@ -80,7 +80,7 @@ int handle_input(int input_choice_result, float *a, float *b, float *c, const ch
 //!
 //! @return type of error from "PossibleErrors" ("kNoError" if there is no error)
 //--------------------------------------------------------------------------------------------
-int handle_output(int output_choice_result, int number_of_roots, float result1, float result2, const char *filename);
+int handle_output(int output_choice_result, long double number_of_roots, long double result1, long double result2, const char *filename);
 
 //-------------------------------------------------------------------------------------------------
 //! Handles the process of asking whether to enter coefficients from file or console (in Graphics).
@@ -98,7 +98,7 @@ int choice_question(void);
 //! 
 //! @return type of error from "PossibleErrors" ("kNoError" if there is no error)
 //-------------------------------------------------------------------------------
-int input(int input_choice_result, FILE *input_file, float *a, float *b, float *c);
+int input(int input_choice_result, FILE *input_file, long double *a, long double *b, long double *c);
 
 //-------------------------------------------------------------------------------
 //! Prints errors from "PossibleErrors" to the stderr and returns type of error.
@@ -120,7 +120,7 @@ int error_printer(int error_type);
 //! 
 //! @return type of error from "PossibleErrors" ("kNoError" if there is no error)
 //-------------------------------------------------------------------------------------------
-void output(int output_choice_result, int number_of_roots, float result1, float result2, FILE *file);
+void output(int output_choice_result, long double number_of_roots, long double result1, long double result2, FILE *file);
 
 //------------------------------------------------------------------------------
 //! Handles all the process of opening file.
@@ -153,7 +153,7 @@ int close_file(FILE *file);
 //! 
 //! @return type of error from "PossibleErrors" ("kNoError" if there is no error)
 //---------------------------------------------------------------------------------------------------------
-int all_file_input(int input_choice_result, float *a, float *b, float *c, const char *filename);
+int all_file_input(int input_choice_result, long double *a, long double *b, long double *c, const char *filename);
 
 //---------------------------------------------------------------------------------------------------------
 //! Handles all the process of working with console input coefficients (input(...)).
@@ -166,4 +166,4 @@ int all_file_input(int input_choice_result, float *a, float *b, float *c, const 
 //! 
 //! @return type of error from "PossibleErrors" ("kNoError" if there is no error)
 //---------------------------------------------------------------------------------------------------------
-void all_console_input(int input_choice_result, float *a, float *b, float *c, const char *filename);
+void all_console_input(int input_choice_result, long double *a, long double *b, long double *c, const char *filename);

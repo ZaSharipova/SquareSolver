@@ -32,3 +32,5 @@ void problem_with_input_three_text(void);
 //! Prints the mistake text when 3 numbers you entered from the file are not correct to the type or amount.
 //---------------------------------------------------------------------------------------------------------
 void problem_with_input_three_text_file(void);
+
+void assert_true(void);

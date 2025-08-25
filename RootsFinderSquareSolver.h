@@ -13,7 +13,7 @@
 //!
 //! @return Number of roots
 //----------------------------------------------------------------------------------------------------------------------------------------------
-int find_result(float a, float b, float c, float *result1, float *result2);
+long double find_result(long double a, long double b, long double c, long double *result1, long double *result2);
 
 //---------------------------------------------
 //! The function which calculates discriminant.
@@ -24,7 +24,7 @@ int find_result(float a, float b, float c, float *result1, float *result2);
 //!
 //! @return discriminant
 //---------------------------------------------
-float calculate_discriminant(float a, float b, float c);
+long double calculate_discriminant(long double a, long double b, long double c);
 
 //-----------------------------------------------------------------------------------------------------------------------
 //! The function which finds roots when equation is linear, it changes result1 (in main) and returns number of solutions.
@@ -37,7 +37,7 @@ float calculate_discriminant(float a, float b, float c);
 //!
 //! @note In case of infinite number of roots, returns kInfRoots = INT_MAX.
 //-----------------------------------------------------------------------------------------------------------------------
-int find_linear_root(float b, float c, float *result1);
+long double find_linear_root(long double b, long double c, long double *result1);
 
 //--------------------------------------------------------------------------------------------------------------------------
 //! The function which finds roots when equation is quadratic, it changes result1 (in main) and returns number of solutions.
@@ -50,4 +50,4 @@ int find_linear_root(float b, float c, float *result1);
 //!
 //! @return Number of roots in quadratic equation
 //--------------------------------------------------------------------------------------------------------------------------
-int find_quadratic_roots(float a, float b, float c, float *result1, float *result2);
+long double find_quadratic_roots(long double a, long double b, long double c, long double *result1, long double *result2);
