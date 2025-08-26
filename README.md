@@ -70,7 +70,7 @@ make all
 
 [Шарипова Зарина](https://t.me/zar45679)
 
-[Наумов Владимир](https://t.me/mskfreede) - мимо проходил
+[Наумов Владимир](https://t.me/mskfreede) - мимо проходил (QA tester)
 
 [Водолжаенко Иван](https://t.me/zivvigg135) - ментор
 
