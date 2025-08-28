@@ -44,6 +44,9 @@ void clear_input_buffer(void) {
 }
 
 bool in_out_command_checker(int argc, int i, char * stroke, const char *command) {
+    assert(stroke  != NULL);
+    assert(command != NULL);
+    
     return (strcmp(stroke, command) == 0) && (i + 1 < argc);
 }
 

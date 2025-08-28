@@ -1,10 +1,15 @@
+#ifndef SUBSIDIARY_FUNCTIONS_H_
+#define SUBSIDIARY_FUNCTIONS_H_
+
+#include <stdio.h>
+
 //------------------------------------------------------------------
 //! Tests whether the number is zero (due to the measurement error).
 //! @param [in] number number beeing checked
 //!
 //! @return true/false
 //------------------------------------------------------------------
-bool is_zero(long double number);
+bool is_zero(double number);
 
 //-------------------------------------------
 //! Tests whether the number is negative.
@@ -13,7 +18,7 @@ bool is_zero(long double number);
 //!
 //! @return true/false
 //-------------------------------------------
-bool is_negative(long double number);
+bool is_negative(double number);
 
 //----------------------------------------------
 //! Sorts result1 and result2.
@@ -22,24 +27,14 @@ bool is_negative(long double number);
 //! @param [out] result2 Pointer to the 2nd root
 //!
 //----------------------------------------------
-void sort_result(long double *result1, long double *result2);
+void sort_result(double *result1, double *result2);
 
 //-------------------------------------------------------------------------
 //! Checks if the root looks like "-0.000..." and changes it to "0.000...".
 //!
 //! @param [out] result1 Pointer to the result (root)
 //-------------------------------------------------------------------------
-void root_zero_checker(long double *result);
-
-//--------------------------------------------------------------------
-//! Checks whether the number entered from the file is correct (1, 2).
-//!
-//! @param [in] status What was the result of scanf
-//! @param [in] choice_result 1 or 2 (file or console)
-//!
-//! @return true/false
-//--------------------------------------------------------------------
-bool status_scan_false(int status, int choice_result);
+void root_zero_checker(double *result);
 
 //----------------------
 //! Clears input buffer.
@@ -47,7 +42,7 @@ bool status_scan_false(int status, int choice_result);
 void clear_input_buffer(void);
 
 //------------------------------------------------------------------------------------------------------
-//! Checks whether command written from commad line is "--in", "--out" and has continuation.
+//! Checks whether command written from command line is "--in", "--out" and has continuation.
 //!
 //! @param [in] argc Size of stroke beeing entered from console
 //! @param [in] i Position in argv[]
@@ -58,4 +53,15 @@ void clear_input_buffer(void);
 //------------------------------------------------------------------------------------------------------
 bool in_out_command_checker(int argc, int i, char * stroke, const char *command);
 
+//---------------------------------------------
+//! Counts amount of numbers in file.
+//!
+//! @param [in] buff Pointer to the buffer 
+//! @param [in] size Size of the file in bytes
+//!
+//! @return amount of numbers in file
+//---------------------------------------------
 size_t nums_counter(char * buff, size_t size);
+
+
+#endif // SUBSIDIARY_FUNCTIONS_H_

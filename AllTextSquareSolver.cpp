@@ -1,9 +1,14 @@
 #include "AllTextSquareSolver.h"
 
 #include <stdio.h>
+#include <math.h>
+#include <assert.h>
 
 #include "EnumsSquareSolver.h"
 #include "ColorsToOutput.h"
+#include "RootsFinderSquareSolver.h"
+#include "SubsidiaryFunctionsSquareSolver.h"
+#include "StructsSquareSolver.h"
 
 void start_intro(void) {
     printf(BLUE "                                  y\n" RESET);                             
@@ -39,6 +44,13 @@ void output_choice_text(void) {
     printf(BLUE "2" RESET " - in the console:\n");
 }
 
+void solution_choice_text(void){
+    printf("\n");
+    printf("Please answer whether you want to see full soultion or just a result:\n");
+    printf(BLUE "1" RESET " - full solution,\n");
+    printf(BLUE "2" RESET " - only result:\n");
+}
+
 void example_of_input_coefficients(void) {
     printf("\n");
     printf("Please enter coefficients " YELLOW "a" RESET ", " YELLOW "b" RESET ", " YELLOW "c" RESET " separated by spaces:\n");
@@ -70,6 +82,8 @@ void assert_true(void) {
 
 
 void print_conditional_int_color(FILE *file, RootsCount number_of_roots) {
+    assert(file != NULL);
+
     if (file == stdout) {
         fprintf(file, GREEN "%d" RESET, number_of_roots);
     } else {
@@ -78,6 +92,8 @@ void print_conditional_int_color(FILE *file, RootsCount number_of_roots) {
 }
 
 void print_conditional_one_root_color(FILE *file, double result1) {
+    assert(file != NULL);
+
     if (file == stdout) {
         fprintf(file, CYAN "%.5lf\n" RESET, result1);
     } else {
@@ -86,9 +102,88 @@ void print_conditional_one_root_color(FILE *file, double result1) {
 }
 
 void print_conditional_two_roots_color(FILE *file, double result1, double result2) {
+    assert(file != NULL);
+
     if (file == stdout) {
+
         fprintf(file, CYAN " %.5lf" RESET " and " CYAN "%.5lf\n" RESET, result1, result2);
     } else {
         fprintf(file, " %.5lf and %.5lf\n",result1, result2);
     }
+}
+
+// void cond_print(FILE* fn, const char* fmt, ...) {
+//     if (fn != stdout) {
+//         #undef RED
+//         #undef WH
+//         #define .. ""
+
+//         printf(fmt, ...);
+
+//         #define ""
+//     }
+// }
+
+int output_long_solution(SolutionArguments *solver, FILE *file) {
+    assert(solver != NULL);
+    assert(file != NULL);
+
+    fprintf(file, "------------------------------------------------------------------------------------------------------------------------\n");
+    fprintf(file, "                                              Solution:\n");
+
+    if (is_zero(solver->a)) {
+        fprintf(file, "\nThis equation is not square, but linear.\n");
+        fprintf(file, "But we will solve it.\n\n");
+
+        if (is_zero(solver->b)) {
+            if (is_zero(solver->c)) {
+                fprintf(file, "Let's try to substitute any value into function.\n");
+                fprintf(file, "And in each case this value is a solution.\n");
+
+            } else{
+                fprintf(file, "Equation of a type \"const = 0\", if const != 0, doesnt't have solutions.\n");
+            }
+            return 0;
+        }
+        fprintf(file, "So the only solution is : result1 = -c / b = %.5lf / %.5lf = %.5lf.\n", -(solver->a), solver->b, solver->result1);
+        return 0;
+    }
+
+    fprintf(file, "\nFirst of all, let's find discriminant: discriminant = b ^ 2 - 4 * a * c.\n");
+    fprintf(file, "So discriminant = %.5lf.\n", solver->discriminant);
+
+    if (is_negative(solver->discriminant)) {
+        fprintf(file, "Discriminant is negative, so this equation doesn't have roots as all function values are more, than zero.\n");
+        return 0;
+    }
+
+    fprintf(file, "\nFormulas for solutions are: result1 = (-b - sqrt(discriminant) / (2 * a) and result2 = (-b + sqrt(discriminant) / (2 * a).\n");
+    
+    if (is_zero(solver->discriminant)) {
+        fprintf(file, "Discriminant is zero. This is why there is only one solution.\n");
+        fprintf(file, "And it is result1 = -b / (2 * a) = %.5lf / (2 * %.5lf) = %.5lf.\n", -(solver->b), (solver->a), (solver->result1));
+        return 0;
+    } 
+
+    double ans1 = res1(solver->result1, solver->result2, solver->a);
+    double ans2 = res2(solver->result1 + solver->result2, ans1);
+    fprintf(file, "\nDiscriminant is positive. This is why there are two different solutions.\n");
+    fprintf(file, "These are result1 = -b - sqrt(discriminant) / (2 * a) = (%.5lf - %.5lf) / (2 * %.5lf) = %.5lf,\n", -(solver->b), sqrt(solver->discriminant), solver->a, ans1);
+    fprintf(file, "And result2 = -b + sqrt(discriminant) / (2 * a) = (%.5lf + %lf) / (2 * %.5lf) = %.5lf.\n", -(solver->b), sqrt(solver->discriminant), solver->a, ans2);
+    return 0;
+}
+
+void print_wrong_answers(SolutionArgumentsCompared *Compare, SolutionArguments *solver){
+    assert(Compare != NULL);
+    assert(solver != NULL);
+
+    printf("Wrong answer to coefficients a = %.5lf"
+           ", b = %.5lf, c = %.5lf. Your answers: "
+           "number_of_roots = %d, x1 = %.5lf, x2 = %.5lf. "
+           "Right answers: number_of_roots = %d, x1 = %.5lf, x2 = %.5lf\n", 
+            Compare->a, Compare->b, Compare->c, 
+            solver->number_of_roots, 
+            solver->result1, solver->result2, 
+            Compare->number_of_roots_compared, 
+            Compare->result1_compared, Compare->result2_compared);
 }

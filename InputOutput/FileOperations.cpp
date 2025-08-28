@@ -10,13 +10,12 @@
 
 
 PossibleErrors open_file(const char *filename, FILE **file, const char *mode) {
-    assert(mode != NULL);
+    assert(mode     != NULL);
     assert(filename != NULL);
-    assert(mode != NULL);
-    assert(file != NULL);
+    assert(mode     != NULL);
+    assert(file     != NULL);
 
     *file = fopen(filename, mode);
-
     if (*file == NULL) {
         return kErrorOpening;
     }
@@ -33,5 +32,6 @@ PossibleErrors close_file(FILE *file) {
     if (status != 0) {
         return kErrorClosing;
     }
+
     return kNoError;
 }

@@ -1,0 +1,34 @@
+#ifndef MY_ASSERT_H_
+#define MY_ASSERT_H_
+
+#include "ColorsToOutput.h"
+
+#define vprintf(file, format, ...) fprintf (file, format, __VA_ARGS__)
+
+#ifdef NDEBUG
+#define MY_ASSERT(condition, format, ...) (void(0))
+#else
+#define MY_ASSERT(condition, format, ...) \
+    if (!(condition)) { \
+        fprintf(stderr, RED "Assertion failed: %s, file %s, line %d.\n" RESET, #condition,  __FILE__, __LINE__); \
+        assert_true(); \
+        vprintf(stderr, RED format RESET, __VA_ARGS__); \
+        abort(); \
+    }
+#endif
+
+//#define vprintf(file, format, ...) fprintf(file, format, __VA_ARGS__)
+// #define print_cond_color(file, format, ...)\
+//     if (file == stdout){
+//         vprintf(file, format, __VA_ARGS__);\
+//     }
+
+// #define print_cond_color(file, color, format, ...) \
+//     do { \
+//         if ((file) != stdout) { \
+//             *color = WHITE;
+//             vprintf(file, format, __VA_ARGS__); \
+//         } \
+//     } while(0)
+
+#endif

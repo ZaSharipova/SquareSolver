@@ -2,6 +2,7 @@
 #define ALL_OUTPUT_H_
 
 #include "EnumsSquareSolver.h"
+#include "StructsSquareSolver.h"
 
 //-----------------------------------------------------------------------------------------------------------------------
 //! Handles all the process of input.
@@ -14,7 +15,7 @@
 //!
 //! @return type of error from "PossibleErrors" ("kNoError" if there is no error)
 //-----------------------------------------------------------------------------------------------------------------------
-PossibleErrors handle_input(TypeOfInputOutput input_choice_result, double *a, double *b, double *c, const char *filename);
+PossibleErrors handle_input(Inout *flags, SolutionArguments *solver, const char *filename);
 
 //---------------------------------------------------------------------------------------------------------
 //! Handles all the process of working with file to input coefficients (open(...), input(...). close(...)).
@@ -27,7 +28,7 @@ PossibleErrors handle_input(TypeOfInputOutput input_choice_result, double *a, do
 //! 
 //! @return type of error from "PossibleErrors" ("kNoError" if there is no error)
 //---------------------------------------------------------------------------------------------------------
-PossibleErrors all_file_input(TypeOfInputOutput input_choice_result, double *a, double *b, double *c, const char *filename);
+PossibleErrors all_file_input(TypeOfInputOutput input_choice_result, SolutionArguments *solver, const char *filename);
 
 //---------------------------------------------------------------------------------------------------------
 //! Handles all the process of working with console input coefficients (input(...)).
@@ -40,7 +41,7 @@ PossibleErrors all_file_input(TypeOfInputOutput input_choice_result, double *a, 
 //! 
 //! @return type of error from "PossibleErrors" ("kNoError" if there is no error)
 //---------------------------------------------------------------------------------------------------------
-void all_console_input(TypeOfInputOutput input_choice_result, double *a, double *b, double *c, const char *filename);
+void all_console_input(TypeOfInputOutput input_choice_result, SolutionArguments *solver, const char *filename);
 
 //-------------------------------------------------------------------------------
 //! Handles the process of "scanf" (or "fscanf") of 3 coefficients.
@@ -53,7 +54,7 @@ void all_console_input(TypeOfInputOutput input_choice_result, double *a, double 
 //! 
 //! @return type of error from "PossibleErrors" ("kNoError" if there is no error)
 //-------------------------------------------------------------------------------
-PossibleErrors input(TypeOfInputOutput input_choice_result, FILE *input_file, double *a, double *b, double *c);
+PossibleErrors input(TypeOfInputOutput input_choice_result, FILE *input_file, SolutionArguments *solver);
 
 //-------------------------------------------------------------------------------------------------
 //! Handles the process of asking whether to enter coefficients from file or console (in Graphics).
@@ -73,5 +74,7 @@ void first_question_in_graphics(TypeOfInputOutput *input_choice_result);
 //! @param [out] output_choice_result Pointer to the 1 or 2 (kFile or kConsole)
 //------------------------------------------------------------------------------------------------------
 void second_question_in_graphics(TypeOfInputOutput *output_choice_result);
+
+void third_question_in_graphics(TypeOfResult *result_type);
 
 #endif // ALL_OUTPUT_H_

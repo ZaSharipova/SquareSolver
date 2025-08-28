@@ -10,17 +10,17 @@
 #include "InputOutputDefines.h"
 #include "ColorsToOutput.h"
 #include "FileOperations.h"
+#include "StructsSquareSolver.h"
 
-PossibleErrors handle_input(TypeOfInputOutput input_choice_result, double *a, double *b, double *c, const char *filename) {
-    assert(a != NULL);
-    assert(b != NULL);
-    assert(c != NULL);
+PossibleErrors handle_input(Inout *flags, SolutionArguments *solver, const char *filename) {
+    assert(solver   != NULL);
+    assert(flags    != NULL);
     assert(filename != NULL);
 
     PossibleErrors err = kNoError;
  
-    if (input_choice_result == kFile) {
-        err = all_file_input(input_choice_result, a, b, c, filename);
+    if (flags->input_choice_result == kFile) {
+        err = all_file_input(flags->input_choice_result, solver, filename);
         if (err != kNoError) {
             return err;
         }
@@ -35,27 +35,25 @@ PossibleErrors handle_input(TypeOfInputOutput input_choice_result, double *a, do
         // }
 
     } else {
-        all_console_input(input_choice_result, a, b, c, filename);
+        all_console_input(flags->input_choice_result, solver, filename);
     }
  
     return kNoError;
 }
 
-PossibleErrors all_file_input(TypeOfInputOutput input_choice_result, double *a, double *b, double *c, const char *filename) {
-    assert(a != NULL);
-    assert(b != NULL);
-    assert(c != NULL);
+PossibleErrors all_file_input(TypeOfInputOutput input_choice_result, SolutionArguments *solver, const char *filename) {
+    assert(solver   != NULL);
     assert(filename != NULL);
 
     FILE *file = NULL;
     int err = kNoError;
 
-    err = open_file(filename, &file, read_mode);
+    err = open_file(filename, &file, READ_MODE);
     if (err != kNoError) {
         return kErrorOpening;
     }
  
-    err = input(input_choice_result, file, a, b, c);
+    err = input(input_choice_result, file, solver);
     if (err != kNoError) {
         return kBadInputGraphics;
     }
@@ -67,23 +65,19 @@ PossibleErrors all_file_input(TypeOfInputOutput input_choice_result, double *a, 
     return kNoError;
 }
 
-void all_console_input(TypeOfInputOutput input_choice_result, double *a, double *b, double *c, const char *filename) {
-    assert(a != NULL);
-    assert(b != NULL);
-    assert(c != NULL);
+void all_console_input(TypeOfInputOutput input_choice_result, SolutionArguments *solver, const char *filename) {
+    assert(solver   != NULL);
     assert(filename != NULL);
 
     example_of_input_coefficients();
-    input(input_choice_result, stdin, a, b, c);
+    input(input_choice_result, stdin, solver);
 }
 
-PossibleErrors input(TypeOfInputOutput input_choice_result, FILE *input_file, double *a, double *b, double *c) {
+PossibleErrors input(TypeOfInputOutput input_choice_result, FILE *input_file, SolutionArguments *solver) {
+    assert(solver     != NULL);
     assert(input_file != NULL);
-    assert(a != NULL);
-    assert(b != NULL);
-    assert(c != NULL);
 
-    int status = fscanf(input_file, "%lf %lf %lf", a, b, c);
+    int status = fscanf(input_file, "%lf %lf %lf", &(solver->a), &(solver->b), &(solver->c));
     if (status == 3) {
         return kNoError;
     }
@@ -95,7 +89,7 @@ PossibleErrors input(TypeOfInputOutput input_choice_result, FILE *input_file, do
     while (status != 3) {
         print_problem_with_input_three_text();
         clear_input_buffer();
-        status = fscanf(input_file, "%lf %lf %lf", a, b, c);
+        status = fscanf(input_file, "%lf %lf %lf", &(solver->a), &(solver->b), &(solver->c));
     }
 
     return kNoError;
@@ -113,6 +107,13 @@ void second_question_in_graphics(TypeOfInputOutput *output_choice_result) {
 
     output_choice_text();
     *output_choice_result = choice_question();
+}
+
+void third_question_in_graphics(TypeOfResult *result_type){
+    assert(result_type != NULL);
+
+    solution_choice_text();
+    *result_type = (TypeOfResult) choice_question();
 }
 
 TypeOfInputOutput choice_question(void) {

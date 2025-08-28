@@ -6,52 +6,53 @@
 #include <assert.h>
 
 #include "SubsidiaryFunctionsSquareSolver.h"
+#include "StructsSquareSolver.h"
 
-RootsCount find_result(double a, double b, double c, double *result1, double *result2) {
-    assert(result1 != NULL);
-    assert(result2 != NULL);
+RootsCount find_result(SolutionArguments *solver) {
+    assert(solver != NULL);
 
-    if (is_zero(a)) {
-        return find_linear_root(b, c, result1);
+    if (is_zero(solver->a)) {
+        return find_linear_root(solver);
     } 
-    return find_quadratic_roots(a, b, c, result1, result2);
+    return find_quadratic_roots(solver);
 }
 
 double calculate_discriminant(double a, double b, double c) {
     return b * b - 4 * a * c;
 }
 
-RootsCount find_linear_root(double b, double c, double *result1) {
-    assert(result1 != NULL);
+RootsCount find_linear_root(SolutionArguments *solver) {
+    assert(solver != NULL);
 
-    if (!is_zero(b)) {
-            *result1 = -c / b;
+    if (!is_zero(solver->b)) {
+            solver->result1 = -(solver->c) / (solver->b);
             return kOneRoot;
     } else {
-        if (is_zero(c)) {
+        if (is_zero(solver->c)) {
             return kInfRoots;
         }
         return kZeroRoots;
     }
 }
 
-RootsCount find_quadratic_roots(double a, double b, double c, double *result1, double *result2) {
-    assert(result1 != NULL);
-    assert(result2 != NULL);
+RootsCount find_quadratic_roots(SolutionArguments *solver) {
+    assert(solver != NULL);
 
-    double discriminant = calculate_discriminant(a, b, c);
+    solver->discriminant = calculate_discriminant(solver->a, solver->b, solver->c);
 
-    if (!is_negative(discriminant)) {
-        if (is_zero(discriminant)) { 
-            *result1 = -b / (2 * a);
+    if (!is_negative(solver->discriminant)) {
+        if (is_zero(solver->discriminant)) { 
+            solver->result1 = -(solver->b) / (2 * (solver->a));
             return kOneRoot;
 
         } else {
-            *result1 = (-b + sqrtl(discriminant)) / (2 * a);
-            *result2 = (-b - sqrtl(discriminant)) / (2 * a);
-            sort_result(result1, result2);
-            root_zero_checker(result1);
-            root_zero_checker(result2);
+            solver->result1 = (-(solver->b) + sqrt(solver->discriminant)) / (2 * (solver->a));
+            solver->result2 = (-(solver->b) - sqrt(solver->discriminant)) / (2 * (solver->a));
+
+            sort_result(&(solver->result1), &(solver->result2));
+
+            root_zero_checker(&(solver->result1));
+            root_zero_checker(&(solver->result2));
             return kTwoRoots;
         }
     }

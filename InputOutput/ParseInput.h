@@ -2,6 +2,7 @@
 #define PARSE_INPUT_H_
 
 #include "EnumsSquareSolver.h"
+#include "StructsSquareSolver.h"
 
 //---------------------------------------------------------------------------------------------------------------------
 //! Parses the command stroke being entered (with the usage of "parse_in" and "parse_out").
@@ -15,7 +16,7 @@
 //!
 //! @return kNoError (means there is no error) or other errors from "PossibleErrors"
 //---------------------------------------------------------------------------------------------------------------------
-PossibleErrors parse_arguments(int argc, char *argv[], TypeOfInputOutput *input_choice_result, TypeOfInputOutput *output_choice_result, const char **filename_to_open_input, const char **filename_to_open_output);
+PossibleErrors parse_arguments(int argc, char *argv[], Inout *flags, Files *filenames, SolutionArguments *solver);
 
 //---------------------------------------------------------------------------------------------------------------------
 //! Handles parsing of the command stroke being entered if it's size is more then 1.
@@ -29,7 +30,7 @@ PossibleErrors parse_arguments(int argc, char *argv[], TypeOfInputOutput *input_
 //!
 //! @return kNoError (means there is no error) or other errors from "PossibleErrors"
 //---------------------------------------------------------------------------------------------------------------------
-PossibleErrors parse_checker(int argc, char *argv[], TypeOfInputOutput *input_choice_result, TypeOfInputOutput *output_choice_result, const char **filename_to_open_input, const char **filename_to_open_output);
+PossibleErrors parse_checker(int argc, char *argv[], Inout *flags, Files *filenames, SolutionArguments *solver);
 
 //-------------------------------------------------------------------------------------------------------------------
 //! Parses the command starting with "--in".
@@ -57,4 +58,6 @@ bool parse_in(int argc, char * argv[], TypeOfInputOutput *input_choice_result, i
 //! @return true/false
 //--------------------------------------------------------------------------------------------------------------------
 bool parse_out(int argc, char * argv[], TypeOfInputOutput *output_choice_result, int pos, const char **filename_to_open_output);
+
+bool parse_solution(char *stroke, TypeOfResult *result_type);
 #endif

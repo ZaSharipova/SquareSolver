@@ -2,6 +2,7 @@
 #define ALL_INPUT_H_
 
 #include "EnumsSquareSolver.h"
+#include "StructsSquareSolver.h"
 
 //--------------------------------------------------------------------------------------------
 //! Handles all the process of output.
@@ -14,7 +15,7 @@
 //!
 //! @return type of error from "PossibleErrors" ("kNoError" if there is no error)
 //--------------------------------------------------------------------------------------------
-PossibleErrors handle_output(TypeOfInputOutput output_choice_result, RootsCount number_of_roots, double result1, double result2, const char *filename);
+PossibleErrors handle_output(Inout *flags, SolutionArguments *solver, const char *filename);
 
 //-------------------------------------------------------------------------------------------
 //! Handles the process of "printf" (or "fprintf") of roots (probably no roots).
@@ -27,7 +28,7 @@ PossibleErrors handle_output(TypeOfInputOutput output_choice_result, RootsCount 
 //! 
 //! @return type of error from "PossibleErrors" ("kNoError" if there is no error)
 //-------------------------------------------------------------------------------------------
-void output(TypeOfInputOutput output_choice_result, RootsCount number_of_roots, double result1, double result2, FILE *file);
+void output(Inout *flags, SolutionArguments *solver, FILE *file);
 
 //-------------------------------------------------------------------------------
 //! Prints errors from "PossibleErrors" to the stderr and returns type of error.

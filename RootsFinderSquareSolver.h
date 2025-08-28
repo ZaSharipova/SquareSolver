@@ -1,6 +1,11 @@
+#ifndef ROOTS_FINDER_H_
+#define ROOTS_FINDER_H_
+
 #include <stdio.h>
 #include <limits.h>
+
 #include "EnumsSquareSolver.h"
+#include "StructsSquareSolver.h"
 
 //----------------------------------------------------------------------------------------------------------------------------------------------
 //! The function which redirects tou to another function due to the fact whether (a == 0) or not. find_result(...) also returns number of roots.
@@ -13,7 +18,7 @@
 //!
 //! @return Number of roots
 //----------------------------------------------------------------------------------------------------------------------------------------------
-long double find_result(long double a, long double b, long double c, long double *result1, long double *result2);
+RootsCount find_result(SolutionArguments *Solver);
 
 //---------------------------------------------
 //! The function which calculates discriminant.
@@ -24,7 +29,7 @@ long double find_result(long double a, long double b, long double c, long double
 //!
 //! @return discriminant
 //---------------------------------------------
-long double calculate_discriminant(long double a, long double b, long double c);
+double calculate_discriminant(double a, double b, double c);
 
 //-----------------------------------------------------------------------------------------------------------------------
 //! The function which finds roots when equation is linear, it changes result1 (in main) and returns number of solutions.
@@ -37,7 +42,7 @@ long double calculate_discriminant(long double a, long double b, long double c);
 //!
 //! @note In case of infinite number of roots, returns kInfRoots = INT_MAX.
 //-----------------------------------------------------------------------------------------------------------------------
-long double find_linear_root(long double b, long double c, long double *result1);
+RootsCount find_linear_root(SolutionArguments *Solver);
 
 //--------------------------------------------------------------------------------------------------------------------------
 //! The function which finds roots when equation is quadratic, it changes result1 (in main) and returns number of solutions.
@@ -50,4 +55,6 @@ long double find_linear_root(long double b, long double c, long double *result1)
 //!
 //! @return Number of roots in quadratic equation
 //--------------------------------------------------------------------------------------------------------------------------
-long double find_quadratic_roots(long double a, long double b, long double c, long double *result1, long double *result2);
+RootsCount find_quadratic_roots(SolutionArguments *Solver);
+
+#endif // ROOTS_FINDER_H_

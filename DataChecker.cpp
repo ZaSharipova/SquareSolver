@@ -10,10 +10,12 @@
 #include "EnumsSquareSolver.h"
 #include "SubsidiaryFunctionsSquareSolver.h"
 #include "FileOperations.h"
+#include "AllTextSquareSolver.h"
+#include "InputOutputDefines.h"
 
 const double EPSL = 1e-5L;
 
-PossibleErrors unit_test_checker(void) {
+PossibleErrors unit_test_checker(SolutionArguments *solver) {
     char *ptr = NULL;
     double *ptd1 = NULL;
     double *ptd2 = NULL;
@@ -37,7 +39,7 @@ PossibleErrors unit_test_checker(void) {
         return err;
     }
         
-    handle_compare_results(ptd1, ptd2, numbers_count);
+    handle_compare_results(ptd1, ptd2, numbers_count, solver);
     free(ptd1);
     free(ptd2);
         
@@ -88,7 +90,7 @@ PossibleErrors buff_input(const char *filename, size_t *numbers_count, char **pt
     assert(ptr != NULL);
 
     FILE * file = NULL;
-    PossibleErrors err = open_file(filename, &file, "r");
+    PossibleErrors err = open_file(filename, &file, READ_MODE);
     if (err != kNoError) {
         return err;
     }
@@ -129,32 +131,36 @@ void parse(double * ptd, char * ptr) {
 
 }
 
-void handle_compare_results(double *ptd1, double *ptd2, size_t count) {
+void handle_compare_results(double *ptd1, double *ptd2, size_t count, SolutionArguments *solver) {
     assert(ptd1 != NULL);
     assert(ptd2 != NULL);
 
+    struct SolutionArgumentsCompared Compare;
+
     for (size_t j = 0; j < count; j += 3) {
+        Compare.a = ptd1[j];
+        Compare.b = ptd1[j + 1];
+        Compare.c = ptd1[j + 2];
+        
+        Compare.number_of_roots_compared = (RootsCount)ptd2[j];
+        Compare.result1_compared = ptd2[j + 1];
+        Compare.result2_compared = ptd2[j + 2];
 
-        double a = ptd1[j];
-        double b = ptd1[j + 1];
-        double c = ptd1[j + 2];
-
-        RootsCount number_of_results_compared = (RootsCount)ptd2[j];
-        double result1_compared = ptd2[j + 1];
-        double result2_compared = ptd2[j + 2];
-
-        test_check(a, b, c, number_of_results_compared, result1_compared, result2_compared);
+        test_check(&Compare, solver);
     }
 }
 
-void test_check(double a, double b, double c, RootsCount number_of_results_compared, double result1_compared, double result2_compared) {
+void test_check(SolutionArgumentsCompared *Compare, SolutionArguments *solver) {
+    assert(Compare != NULL);
 
-    double result1 = NAN, result2 = NAN;
-    RootsCount number_of_results = find_result(a, b, c, &result1,  &result2);
+    solver->a = Compare->a, solver->b = Compare->b, solver->c = Compare->c;
 
-    if (!(compare_answers(result1, result1_compared) && (compare_answers(result2, result2_compared)) && (number_of_results == number_of_results_compared))) {
-        printf("Wrong answer to coefficients a = %lf, b = %lf, c = %lf. Your answers: number_of_roots = %d, x1 = %lf, x2 = %lf. Right answers: number_of_roots = %d, x1 = %lf, x2 = %lf\n", 
-        a, b, c, number_of_results, result1, result2, number_of_results_compared, result1_compared, result2_compared);
+    solver->result1 = NAN, solver->result2 = NAN;
+    solver->number_of_roots = find_result(solver);
+
+    if (!(compare_answers(solver->result1, Compare->result1_compared) && (compare_answers(solver->result2, Compare->result2_compared)) 
+    && ((solver->number_of_roots) == (Compare->number_of_roots_compared)))) {
+        print_wrong_answers(Compare, solver);
     } else {
         printf("OK\n");
     }

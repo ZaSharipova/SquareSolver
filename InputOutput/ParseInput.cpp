@@ -11,36 +11,34 @@
 #include "SubsidiaryFunctionsSquareSolver.h"
 #include "DataChecker.h"
 #include "AllInput.h"
+#include "StructsSquareSolver.h"
 
 
-PossibleErrors parse_arguments(int argc, char *argv[], TypeOfInputOutput *input_choice_result, TypeOfInputOutput *output_choice_result, const char **filename_to_open_input, const char **filename_to_open_output) { 
-    assert(input_choice_result != NULL);
-    assert(output_choice_result != NULL);
-    assert(filename_to_open_input != NULL);
-    assert(filename_to_open_output != NULL);
+PossibleErrors parse_arguments(int argc, char *argv[], Inout *flags, Files *filenames, SolutionArguments *solver) { 
+    assert(flags     != NULL);
+    assert(filenames != NULL);
 
     if (argc > 1) {
-        return parse_checker(argc, argv,  input_choice_result, output_choice_result, filename_to_open_input,  filename_to_open_output);
+        return parse_checker(argc, argv, flags, filenames, solver);
     } else {
         start_intro();
-        first_question_in_graphics(input_choice_result);
-        second_question_in_graphics(output_choice_result);
+        first_question_in_graphics(&(flags->input_choice_result));
+        second_question_in_graphics(&(flags->output_choice_result));
+        third_question_in_graphics(&(flags->result_type));
     }
     return kNoError;
 
 }
 
-PossibleErrors parse_checker(int argc, char *argv[], TypeOfInputOutput *input_choice_result, TypeOfInputOutput *output_choice_result, const char **filename_to_open_input, const char **filename_to_open_output) {
-    assert(input_choice_result != NULL);
-    assert(output_choice_result != NULL);
-    assert(filename_to_open_input != NULL);
-    assert(filename_to_open_output != NULL);
+PossibleErrors parse_checker(int argc, char *argv[], Inout *flags, Files *filenames, SolutionArguments *solver) {
+    assert(flags     != NULL);
+    assert(filenames != NULL);
 
     if (argc > 1) {
 
         #ifndef NDEBUG
-        if (strcmp(argv[1], test_command) == 0) {
-            unit_test_checker();
+        if (strcmp(argv[1], TEST_COMMAND) == 0) {
+            unit_test_checker(solver);
             return kTest;
         }
         #endif
@@ -50,11 +48,14 @@ PossibleErrors parse_checker(int argc, char *argv[], TypeOfInputOutput *input_ch
         bool flag_output = false;
 
         while (pos < argc) {
-            if (parse_in(argc, argv, input_choice_result, pos, filename_to_open_input)) {
+            if (parse_in(argc, argv, &(flags->input_choice_result), pos, &(filenames->input_file))) {
                 flag_input = true;
     
-            } else if (parse_out(argc, argv, output_choice_result, pos, filename_to_open_output)) {
+            } else if (parse_out(argc, argv, &(flags->output_choice_result), pos, &(filenames->output_file))) {
                 flag_output = true;
+
+            } else if (parse_solution(argv[pos], &(flags->result_type))) {
+                pos--;
 
             } else {
                 return kBadInputCommands;
@@ -68,43 +69,53 @@ PossibleErrors parse_checker(int argc, char *argv[], TypeOfInputOutput *input_ch
     return kNoError;
 }
 
-bool parse_in(int argc, char *argv[], TypeOfInputOutput *input_choice_result, int pos, const char **filename_to_open_input) {
-    assert(argv != NULL);
-    assert(filename_to_open_input != NULL);
+bool parse_in(int argc, char *argv[], TypeOfInputOutput *input_choice_result, int pos, const char **input_file) {
+    assert(argv       != NULL);
+    assert(input_file != NULL);
 
-    if (in_out_command_checker(argc, pos, argv[pos], in_command)) {
+    if (in_out_command_checker(argc, pos, argv[pos], IN_COMMAND)) {
         pos++;
-        if (strcmp(argv[pos], console_argument) == 0) {
+        if (strcmp(argv[pos], CONSOLE_ARGUMENT) == 0) {
             *input_choice_result = kConsole;
 
-        } else if (strcmp(argv[pos], file_argument) == 0) {
+        } else if (strcmp(argv[pos], FILE_ARGUMENT) == 0) {
             *input_choice_result = kFile;
 
         } else {
             *input_choice_result = kFile;
-            *filename_to_open_input = argv[pos];
+            *input_file = argv[pos];
         }
         return true;
     }
     return false;
 }
 
-bool parse_out(int argc, char * argv[], TypeOfInputOutput *output_choice_result, int pos, const char **filename_to_open_output) {
-    assert(argv != NULL);
-    assert(filename_to_open_output != NULL);
+bool parse_out(int argc, char * argv[], TypeOfInputOutput *output_choice_result, int pos, const char **output_file) {
+    assert(argv        != NULL);
+    assert(output_file != NULL);
 
-    if (in_out_command_checker(argc, pos, argv[pos], out_command)) {
+    if (in_out_command_checker(argc, pos, argv[pos], OUT_COMMAND)) {
         pos++;
-        if (strcmp(argv[pos], console_argument) == 0) {
+        if (strcmp(argv[pos], CONSOLE_ARGUMENT) == 0) {
             *output_choice_result = kConsole;
 
-        } else if (strcmp(argv[pos], file_argument) == 0) {
+        } else if (strcmp(argv[pos], FILE_ARGUMENT) == 0) {
             *output_choice_result = kFile;
             
         } else {
             *output_choice_result = kFile;
-            *filename_to_open_output = argv[pos];
+            *output_file = argv[pos];
         }
+        return true;
+    }
+    return false;
+}
+
+bool parse_solution(char *stroke, TypeOfResult *result_type){
+    assert(stroke != NULL);
+
+    if (strcmp(stroke, SOLUTION_COMMAND) == 0){
+        *result_type = kLongSolution;
         return true;
     }
     return false;
