@@ -13,7 +13,9 @@
 #include "AllTextSquareSolver.h"
 #include "InputOutputDefines.h"
 
-const double EPSL = 1e-5L;
+#include "FunctionsGoogleTests.h"
+
+const double EPS = 1e-5;
 
 PossibleErrors unit_test_checker(SolutionArguments *solver) {
     char *ptr = NULL;
@@ -42,15 +44,19 @@ PossibleErrors unit_test_checker(SolutionArguments *solver) {
     handle_compare_results(ptd1, ptd2, numbers_count, solver);
     free(ptd1);
     free(ptd2);
-        
+    
+    make_google_test_done();
     return err;
 }
 
 size_t file_size(FILE *file) {
     assert(file != NULL);
+    if (file == NULL){
+        return kErrorOpening;
+    }
 
     long saved_pos = ftell(file);
-    assert(saved_pos != -1L); 
+    assert(saved_pos != -1L);
 
     long seek_ret = fseek(file, 0, SEEK_END);
     assert(seek_ret == 0); 
@@ -127,7 +133,6 @@ void parse(double * ptd, char * ptr) {
         ptr += cnt;
         i += 3;
     }
-
 }
 
 void handle_compare_results(double *ptd1, double *ptd2, size_t count, SolutionArguments *solver) {
@@ -151,8 +156,11 @@ void handle_compare_results(double *ptd1, double *ptd2, size_t count, SolutionAr
 
 void test_check(SolutionArgumentsCompared *compare, SolutionArguments *solver) {
     assert(compare != NULL);
+    assert(solver != NULL);
 
-    solver->a = compare->a, solver->b = compare->b, solver->c = compare->c;
+    solver->a = compare->a;
+    solver->b = compare->b;
+    solver->c = compare->c;
 
     solver->result1 = NAN, solver->result2 = NAN;
     solver->number_of_roots = find_result(solver);
@@ -169,5 +177,5 @@ bool compare_answers(double result, double result_compared) {
     if (isnan(result) && isnan(result_compared)) {
         return true;
     }
-    return (fabsl(result - result_compared) < EPSL);
+    return (fabs(result - result_compared) < EPS);
 }

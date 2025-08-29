@@ -23,6 +23,9 @@ void input_choice_text(void);
 //--------------------------------------------------------------------------
 void output_choice_text(void);
 
+//---------------------------------------------------------------------------------
+//! Prints question whether the user wants to see the whole solution or just roots.
+//---------------------------------------------------------------------------------
 void solution_choice_text(void);
 
 //--------------------------------------------------------------------------
@@ -75,10 +78,20 @@ void print_conditional_one_root_color(FILE *file, double result1);
 //-----------------------------------------------------------------------
 void print_conditional_two_roots_color(FILE *file, double result1, double result2);
 
+//-----------------------------------------------------
+//! Prints the whole solution of the equation.
+//!
+//! @param [in] solver Pointer to the structure solver
+//! @param [in] file Pointer to the file
+//-----------------------------------------------------
 int output_long_solution(SolutionArguments *solver, FILE *file);
 
+//----------------------------------------------------------------
+//! Prints message of wrong result of "find_result" function work.
+//!
+//! @param [in] compare Pointer to the structure compare
+//! @param [in] solver Pointer to the structure solver
+//----------------------------------------------------------------
 void print_wrong_answers(SolutionArgumentsCompared *Compare, SolutionArguments *solver);
-
-void cond_print(FILE* fn, const char* fmt, ...);
 
 #endif // ALL_TEXT_H_

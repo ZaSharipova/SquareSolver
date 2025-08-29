@@ -37,6 +37,7 @@ RootsCount find_linear_root(SolutionArguments *solver) {
 
 RootsCount find_quadratic_roots(SolutionArguments *solver) {
     assert(solver != NULL);
+    assert(!is_zero(solver->a));
 
     solver->discriminant = calculate_discriminant(solver->a, solver->b, solver->c);
 
@@ -46,8 +47,10 @@ RootsCount find_quadratic_roots(SolutionArguments *solver) {
             return kOneRoot;
 
         } else {
-            solver->result1 = (-(solver->b) + sqrt(solver->discriminant)) / (2 * (solver->a));
-            solver->result2 = (-(solver->b) - sqrt(solver->discriminant)) / (2 * (solver->a));
+            const double sqrt_d = sqrt(solver->discriminant);
+
+            solver->result1 = (-(solver->b) + sqrt_d) / (2 * (solver->a));
+            solver->result2 = (-(solver->b) - sqrt_d) / (2 * (solver->a));
 
             sort_result(&(solver->result1), &(solver->result2));
 

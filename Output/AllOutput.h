@@ -1,5 +1,5 @@
-#ifndef ALL_INPUT_H_
-#define ALL_INPUT_H_
+#ifndef ALL_OUTPUT_H_
+#define ALL_OUTPUT_H_
 
 #include "EnumsSquareSolver.h"
 #include "StructsSquareSolver.h"
@@ -39,4 +39,4 @@ void output(Inout *flags, SolutionArguments *solver, FILE *file);
 //-------------------------------------------------------------------------------
 PossibleErrors error_printer(PossibleErrors error_type);
 
-#endif
+#endif // ALL_OUTPUT_H_

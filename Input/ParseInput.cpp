@@ -22,9 +22,9 @@ PossibleErrors parse_arguments(int argc, char *argv[], Inout *flags, Files *file
         return parse_checker(argc, argv, flags, filenames, solver);
     } else {
         start_intro();
-        first_question_in_graphics(&(flags->input_choice_result));
-        second_question_in_graphics(&(flags->output_choice_result));
-        third_question_in_graphics(&(flags->result_type));
+        input_question_in_graphics(&(flags->input_choice_result)); 
+        output_question_in_graphics(&(flags->output_choice_result));
+        solution_question_in_graphics(&(flags->result_type));
     }
     return kNoError;
 
@@ -36,12 +36,12 @@ PossibleErrors parse_checker(int argc, char *argv[], Inout *flags, Files *filena
 
     if (argc > 1) {
 
-        #ifndef NDEBUG
+#ifndef NDEBUG
         if (strcmp(argv[1], TEST_COMMAND) == 0) {
             unit_test_checker(solver);
             return kTest;
         }
-        #endif
+#endif
 
         int pos = 1;
         bool flag_input = false;

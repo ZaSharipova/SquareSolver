@@ -59,5 +59,14 @@ bool parse_in(int argc, char * argv[], TypeOfInputOutput *input_choice_result, i
 //--------------------------------------------------------------------------------------------------------------------
 bool parse_out(int argc, char * argv[], TypeOfInputOutput *output_choice_result, int pos, const char **filename_to_open_output);
 
+//------------------------------------------------------------------------------------------------------
+//Checks whether parsed element if "--verbose" or not.
+//!
+//! @param [in] stroke Pointer to the stroke written
+//! @param [out] result_type Pointer to the result_type (which consists of informaton of user's choice)
+//!
+//! @return true/false
+//------------------------------------------------------------------------------------------------------
 bool parse_solution(char *stroke, TypeOfResult *result_type);
-#endif
+
+#endif // PARSE_INPUT_H_

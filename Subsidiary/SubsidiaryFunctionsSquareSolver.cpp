@@ -7,10 +7,10 @@
 
 #include "EnumsSquareSolver.h"
 
-const double EPS = 1e-12L;
+const double EPS = 1e-12;
 
 bool is_zero(double number) {
-    return fabsl(number) < EPS;
+    return fabs(number) < EPS;
 }
 
 bool is_negative(double number) {

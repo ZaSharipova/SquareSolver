@@ -95,28 +95,28 @@ PossibleErrors input(TypeOfInputOutput input_choice_result, FILE *input_file, So
     return kNoError;
 }
 
-void first_question_in_graphics(TypeOfInputOutput *input_choice_result) {
+void input_question_in_graphics(TypeOfInputOutput *input_choice_result) {
     assert(input_choice_result != NULL);
 
     input_choice_text();
     *input_choice_result = choice_question();
 }
 
-void second_question_in_graphics(TypeOfInputOutput *output_choice_result) {
+void output_question_in_graphics(TypeOfInputOutput *output_choice_result) {
     assert(output_choice_result != NULL);
 
     output_choice_text();
     *output_choice_result = choice_question();
 }
 
-void third_question_in_graphics(TypeOfResult *result_type){
+void solution_question_in_graphics(TypeOfResult *result_type){
     assert(result_type != NULL);
 
     solution_choice_text();
     *result_type = (TypeOfResult) choice_question();
 }
 
-TypeOfInputOutput choice_question(void) {
+TypeOfInputOutput choice_question() {
     TypeOfInputOutput choice_result = kConsole;
     int status = 0;
 

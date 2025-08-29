@@ -5,6 +5,7 @@
 
 #include "EnumsSquareSolver.h"
 #include "StructsSquareSolver.h"
+#include "FunctionsGoogleTests.h"
 
 //-------------------------------------------------------------------------------
 //! Function which checks all the process of --test.

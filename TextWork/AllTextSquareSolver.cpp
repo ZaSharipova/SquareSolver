@@ -118,18 +118,6 @@ void print_conditional_two_roots_color(FILE *file, double result1, double result
     }
 }
 
-// void cond_print(FILE* fn, const char* fmt, ...) {
-//     if (fn != stdout) {
-//         #undef RED
-//         #undef WH
-//         #define .. ""
-
-//         printf(fmt, ...);
-
-//         #define ""
-//     }
-// }
-
 int output_long_solution(SolutionArguments *solver, FILE *file) {
     assert(solver != NULL);
     assert(file != NULL);

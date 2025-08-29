@@ -1,5 +1,5 @@
-#ifndef ALL_OUTPUT_H_
-#define ALL_OUTPUT_H_
+#ifndef ALL_INPUT_H_
+#define ALL_INPUT_H_
 
 #include "EnumsSquareSolver.h"
 #include "StructsSquareSolver.h"
@@ -66,15 +66,20 @@ TypeOfInputOutput choice_question(void);
 //!
 //! @param [out] input_choice_result Pointer to the 1 or 2 (kFile or kConsole)
 //------------------------------------------------------------------------------------------------------
-void first_question_in_graphics(TypeOfInputOutput *input_choice_result);
+void input_question_in_graphics(TypeOfInputOutput *input_choice_result);
 
 //------------------------------------------------------------------------------------------------------
 //! Askes a question to enter choice of output format and "redirects" to the "choice_question".
 //!
 //! @param [out] output_choice_result Pointer to the 1 or 2 (kFile or kConsole)
 //------------------------------------------------------------------------------------------------------
-void second_question_in_graphics(TypeOfInputOutput *output_choice_result);
+void output_question_in_graphics(TypeOfInputOutput *output_choice_result);
 
-void third_question_in_graphics(TypeOfResult *result_type);
+//--------------------------------------------------------------------------------------------------------------------
+//! Askes a quetion to enter choice what output user wants to see: long or short.
+//!
+//! @param [out] result_type Pointer to the result_type, which consists of information what solution user wants to see
+//--------------------------------------------------------------------------------------------------------------------
+void solution_question_in_graphics(TypeOfResult *result_type);
 
-#endif // ALL_OUTPUT_H_
+#endif // ALL_INPUT_H_
