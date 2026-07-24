@@ -47,7 +47,7 @@ bool in_out_command_checker(int argc, int i, char * stroke, const char *command)
     assert(stroke  != NULL);
     assert(command != NULL);
     
-    return (strcmp(stroke, command) == 0) && (i + 1 < argc);
+    return (i + 1 < argc) && (strcmp(stroke, command) == 0);
 }
 
 size_t nums_counter(char * buff, size_t size) {
